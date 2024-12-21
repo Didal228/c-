@@ -1,0 +1,330 @@
+// №1
+#include <iostream>
+using namespace std;
+
+struct Rectangle {
+    int x, y; 
+    int width, height;
+};
+
+void moveRectangle(Rectangle &rect, int dx, int dy) {
+    rect.x += dx;
+    rect.y += dy;
+}
+
+void resizeRectangle(Rectangle &rect, int newWidth, int newHeight) {
+    rect.width = newWidth;
+    rect.height = newHeight;
+}
+
+void printRectangle(const Rectangle &rect) {
+    cout << "Прямоугольник:\n";
+    cout << "\tx: " << rect.x << ", y: " << rect.y << endl;
+    cout << "\tШирина: " << rect.width << ", Высота: " << rect.height << endl;
+}
+
+int main() {
+    Rectangle rect = {10, 20, 30, 40};
+
+    printRectangle(rect);
+    
+    moveRectangle(rect, 50, 100);
+    
+    resizeRectangle(rect, 60, 80);
+    
+    printRectangle(rect);
+
+    return 0;
+}
+
+// №2
+
+#include <iostream>
+#include <cmath>
+using namespace std;
+
+struct Point {
+    double x, y;
+};
+
+double distanceBetweenPoints(const Point &p1, const Point &p2) {
+    return sqrt(pow(p2.x - p1.x, 2) + pow(p2.y - p1.y, 2));
+}
+
+int main() {
+    Point point1 = {1.0, 2.0}, point2 = {4.0, 6.0};
+
+    double dist = distanceBetweenPoints(point1, point2);
+    cout << "Расстояние между точками (" << point1.x << ", " << point1.y << ") и (" << point2.x << ", " << point2.y << ") равно " << dist << endl;
+
+    return 0;
+}
+
+// №3
+
+#include <iostream>
+#include <algorithm>
+using namespace std;
+
+struct Fraction {
+    int numerator;   
+    int denominator; 
+};
+
+int gcd(int a, int b) {
+    while (b != 0) {
+        int temp = b;
+        b = a % b;
+        a = temp;
+    }
+    return a;
+}
+
+Fraction simplify(Fraction f) {
+    int commonDivisor = gcd(f.numerator, f.denominator);
+    return {f.numerator / commonDivisor, f.denominator / commonDivisor};
+}
+
+Fraction addFractions(const Fraction &a, const Fraction &b) {
+    int newNumerator = a.numerator * b.denominator + b.numerator * a.denominator;
+    int newDenominator = a.denominator * b.denominator;
+    return simplify({newNumerator, newDenominator});
+}
+
+Fraction subtractFractions(const Fraction &a, const Fraction &b) {
+    int newNumerator = a.numerator * b.denominator - b.numerator * a.denominator;
+    int newDenominator = a.denominator * b.denominator;
+    return simplify({newNumerator, newDenominator});
+}
+
+Fraction multiplyFractions(const Fraction &a, const Fraction &b) {
+    int newNumerator = a.numerator * b.numerator;
+    int newDenominator = a.denominator * b.denominator;
+    return simplify({newNumerator, newDenominator});
+}
+
+Fraction divideFractions(const Fraction &a, const Fraction &b) {
+    int newNumerator = a.numerator * b.denominator;
+    int newDenominator = a.denominator * b.numerator;
+    return simplify({newNumerator, newDenominator});
+}
+
+void mixedNumber(const Fraction &f) {
+    if (f.numerator >= f.denominator && f.denominator != 0) {
+        int wholePart = f.numerator / f.denominator;
+        int remainder = f.numerator % f.denominator;
+        cout << "Целая часть: " << wholePart << ", Остаток: " << remainder << "/" << f.denominator << endl;
+    } else {
+        cout << "Дробь: " << f.numerator << "/" << f.denominator << endl;
+    }
+}
+
+int main() {
+    Fraction a = {3, 4}, b = {1, 2};
+
+    Fraction sum = addFractions(a, b);
+    cout << "Сумма: " << sum.numerator << "/" << sum.denominator << endl;
+
+    Fraction difference = subtractFractions(a, b);
+    cout << "Разность: " << difference.numerator << "/" << difference.denominator << endl;
+
+    Fraction product = multiplyFractions(a, b);
+    cout << "Произведение: " << product.numerator << "/" << product.denominator << endl;
+
+    Fraction quotient = divideFractions(a, b);
+    cout << "Частное: " << quotient.numerator << "/" << quotient.denominator << endl;
+
+    Fraction improper = {7, 3};
+    mixedNumber(improper);
+
+    return 0;
+}
+
+// №4
+#include <iostream>
+#include <vector>
+#include <string>
+#include <algorithm>
+using namespace std;
+
+struct VideoStoreItem {
+    string title;      
+    string director;   
+    string genre;       
+    float popularity;   
+    int price;         
+};
+
+bool searchByTitle(const vector<VideoStoreItem>& items, const string& title) {
+    for (const auto& item : items) {
+        if (item.title == title) {
+            cout << "Фильм найден:" << endl;
+            cout << "\tНазвание: " << item.title << endl;
+            cout << "\tРежиссер: " << item.director << endl;
+            cout << "\tЖанр: " << item.genre << endl;
+            cout << "\tПопулярность: " << item.popularity << endl;
+            cout << "\tЦена: " << item.price << endl;
+            return true;
+        }
+    }
+    cout << "Фильм не найден." << endl;
+    return false;
+}
+
+void searchByGenre(const vector<VideoStoreItem>& items, const string& genre) {
+    bool found = false;
+    for (const auto& item : items) {
+        if (item.genre == genre) {
+            if (!found) {
+                cout << "Фильмы жанра '" << genre << "':" << endl;
+                found = true;
+            }
+            cout << "\tНазвание: " << item.title << endl;
+            cout << "\tРежиссер: " << item.director << endl;
+            cout << "\tПопулярность: " << item.popularity << endl;
+            cout << "\tЦена: " << item.price << endl;
+        }
+    }
+    if (!found) {
+        cout << "Фильмов жанра '" << genre << "' не найдено." << endl;
+    }
+}
+
+void searchByDirector(const vector<VideoStoreItem>& items, const string& director) {
+    bool found = false;
+    for (const auto& item : items) {
+        if (item.director == director) {
+            if (!found) {
+                cout << "Фильмы режиссера '" << director << "':" << endl;
+                found = true;
+            }
+            cout << "\tНазвание: " << item.title << endl;
+            cout << "\tЖанр: " << item.genre << endl;
+            cout << "\tПопулярность: " << item.popularity << endl;
+            cout << "\tЦена: " << item.price << endl;
+        }
+    }
+    if (!found) {
+        cout << "Фильмов режиссера '" << director << "' не найдено." << endl;
+    }
+}
+
+void mostPopularInGenre(const vector<VideoStoreItem>& items, const string& genre) {
+    float maxPopularity = 0.0;
+    VideoStoreItem* popularFilm = nullptr;
+
+    for (const auto& item : items) {
+        if (item.genre == genre && item.popularity > maxPopularity) {
+            maxPopularity = item.popularity;
+            popularFilm = &item;
+        }
+    }
+
+    if (popularFilm) {
+        cout << "Самый популярный фильм в жанре '" << genre << "':\n";
+        cout << "\tНазвание: " << popularFilm->title << endl;
+        cout << "\tРежиссер: " << popularFilm->director << endl;
+        cout << "\tПопулярность: " << popularFilm->popularity << endl;
+        cout << "\tЦена: " << popularFilm->price << endl;
+    } else {
+        cout << "В жанре '" << genre << "' нет фильмов." << endl;
+    }
+}
+
+void showAllRecords(const vector<VideoStoreItem>& items) {
+    if (items.empty()) {
+        cout << "Нет записей для отображения." << endl;
+    } else {
+        for (const auto& item : items) {
+            cout << "Название: " << item.title << endl;
+            cout << "\tРежиссер: " << item.director << endl;
+            cout << "\tЖанр: " << item.genre << endl;
+            cout << "\tПопулярность: " << item.popularity << endl;
+            cout << "\tЦена: " << item.price << endl;
+            cout << endl;
+        }
+    }
+}
+
+void addRecord(vector<VideoStoreItem>& items) {
+    VideoStoreItem newItem;
+    cout << "Добавить новый фильм:" << endl;
+    cout << "Название: ";
+    getline(cin, newItem.title);
+    cout << "Режиссер: ";
+    getline(cin, newItem.director);
+    cout << "Жанр: ";
+    getline(cin, newItem.genre);
+    cout << "Популярность: ";
+    cin >> newItem.popularity;
+    cout << "Цена: ";
+    cin >> newItem.price;
+    cin.ignore(); 
+
+    items.push_back(newItem);
+    cout << "Запись успешно добавлена!" << endl;
+}
+
+int main() {
+    vector<VideoStoreItem> videoStoreItems;
+
+    videoStoreItems.push_back({"Матрица", "Лана Вачовски", "Научная фантастика", 9.8, 500});
+    videoStoreItems.push_back({"Интерстеллар", "Кристофер Нолан", "Научная фантастика", 9.0, 600});
+    videoStoreItems.push_back({"Зеленая миля", "Франк Дарабонт", "Драма", 8.5, 400});
+    videoStoreItems.push_back({"Начало", "Кристофер Нолан", "Триллер", 8.8, 550});
+
+    int choice;
+    do {
+        cout << "Меню видеомагазина:" << endl;
+        cout << "1. Поиск по названию" << endl;
+        cout << "2. Поиск по жанру" << endl;
+        cout << "3. Поиск по режиссеру" << endl;
+        cout << "4. Самый популярный фильм в жанре" << endl;
+        cout << "5. Показать все записи" << endl;
+        cout << "6. Добавить запись" << endl;
+        cout << "0. Выход" << endl;
+        cout << "Ваш выбор: ";
+        cin >> choice;
+        cin.ignore();
+
+        switch (choice) {
+            case 1:
+                cout << "Введите название фильма для поиска: ";
+                string title;
+                getline(cin, title);
+                searchByTitle(videoStoreItems, title);
+                break;
+            case 2:
+                cout << "Введите жанр для поиска: ";
+                string genre;
+                getline(cin, genre);
+                searchByGenre(videoStoreItems, genre);
+                break;
+            case 3:
+                cout << "Введите имя режиссера для поиска: ";
+                string director;
+                getline(cin, director);
+                searchByDirector(videoStoreItems, director);
+                break;
+            case 4:
+                cout << "Введите жанр для поиска самого популярного фильма: ";
+                getline(cin, genre);
+                mostPopularInGenre(videoStoreItems, genre);
+                break;
+            case 5:
+                showAllRecords(videoStoreItems);
+                break;
+            case 6:
+                addRecord(videoStoreItems);
+                break;
+            case 0:
+                cout << "Выход из программы..." << endl;
+                break;
+            default:
+                cout << "Неверный ввод. Попробуйте еще раз." << endl;
+                break;
+        }
+    } while (choice != 0);
+
+    return 0;
+}
